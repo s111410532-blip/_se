@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>微服務系統展示</title>
+  <style>
+    body { font-family: monospace; padding: 24px; background: #0f172a; color: #f8fafc; }
+    .card { background: #1e293b; padding: 16px; border-radius: 8px; margin-bottom: 16px; max-width: 600px; }
+    button { padding: 8px 16px; background: #3b82f6; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    pre { background: #020617; padding: 12px; border-radius: 4px; overflow-x: auto; color: #38bdf8; }
+  </style>
+</head>
+<body>
+  <h1>Docker 微服務架構狀態面板</h1>
+  
+  <div class="card">
+    <h3>系統服務狀態</h3>
+    <button onclick="fetchStatus()">檢查連線狀態</button>
+    <pre id="status-box">點擊按鈕獲取狀態...</pre>
+  </div>
+
+  <div class="card">
+    <h3>PostgreSQL 數據查詢</h3>
+    <button onclick="fetchData()">從資料庫讀取資料</button>
+    <pre id="data-box">尚未查詢...</pre>
+  </div>
+
+  <script>
+    async function fetchStatus() {
+      const box = document.getElementById('status-box');
+      try {
+        const res = await fetch('/api/health');
+        const json = await res.json();
+        box.textContent = JSON.stringify(json, null, 2);
+      } catch (err) {
+        box.textContent = 'API 連線失敗: ' + err.message;
+      }
+    }
+
+    async function fetchData() {
+      const box = document.getElementById('data-box');
+      try {
+        const res = await fetch('/api/services');
+        const json = await res.json();
+        box.textContent = JSON.stringify(json, null, 2);
+      } catch (err) {
+        box.textContent = '讀取失敗: ' + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
